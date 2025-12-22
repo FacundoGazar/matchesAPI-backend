@@ -6,5 +6,7 @@ public record class UpdateMatchDto(
     [Required] int HomeTeamId,
     [Required] int AwayTeamId,
     [Required] DateTime MatchDate,
-    [Required][Range(0, 300000)] int Attendance
+    [Required] string Round,
+    [Required] int HomeScore,
+    [Required] int AwayScore
 );

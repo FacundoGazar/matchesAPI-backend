@@ -1,28 +1,32 @@
 GET http://localhost:5165/matches
 
 ###
-GET http://localhost:5165/matches/3
+GET http://localhost:5165/matches/511
 
 ###
 POST http://localhost:5165/matches
 Content-Type: application/json
 
 {
-  "homeTeamId": 5,
-  "awayTeamId": 6,
-  "matchDate": "2024-05-03T00:00:00",
-  "attendance": 70000
+  "homeTeamId": 1,
+  "awayTeamId": 2,
+  "matchDate": "2025-01-23",
+  "round": "Round 1",
+  "homeScore": 3,
+  "awayScore": 0
 }
 
 ###
-PUT http://localhost:5165/matches/1
+PUT http://localhost:5165/matches/511
 Content-Type: application/json
 
 {
-  "homeTeamId": 7,
-  "awayTeamId": 6,
-  "matchDate": "2024-05-01T00:00:00",
-  "attendance": 55000
+  "homeTeamId": 1,
+  "awayTeamId": 2,
+  "matchDate": "2025-01-23",
+  "round": "Round 1",
+  "homeScore": 3,
+  "awayScore": 0
 }
 
 ###

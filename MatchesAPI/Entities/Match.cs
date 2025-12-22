@@ -15,7 +15,7 @@ public class Match
     public required DateTime MatchDate { get; set; }
 
     [Column("round")]
-    public string? Round { get; set; }
+    public required string Round { get; set; }
 
     [Column("home_team_id")]
     public int HomeTeamId { get; set; }

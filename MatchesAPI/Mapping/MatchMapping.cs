@@ -11,7 +11,10 @@ public static class MatchMapping
             {
                 HomeTeamId = match.HomeTeamId,
                 AwayTeamId = match.AwayTeamId,
-                MatchDate = match.MatchDate
+                MatchDate = match.MatchDate,
+                Round = match.Round,
+                HomeScore = match.HomeScore,
+                AwayScore = match.AwayScore
             };
     }
     
@@ -20,8 +23,11 @@ public static class MatchMapping
         return new (
                 match.Id,
                 match.HomeTeam!.Name,
+                match.HomeScore,
                 match.AwayTeam!.Name,
-                match.MatchDate
+                match.AwayScore,
+                match.MatchDate,
+                match.Round
             );
     }
 }

@@ -42,6 +42,12 @@ public static class MatchesEndpoints
             match.HomeTeam = dbContext.Teams.Find(newMatch.HomeTeamId);
             match.AwayTeam = dbContext.Teams.Find(newMatch.AwayTeamId);
 
+            if (match.HomeTeam is null || match.AwayTeam is null
+                || match.HomeTeamId == match.AwayTeamId)
+            {
+                return Results.BadRequest("Invalid team IDs provided.");
+            }
+
             dbContext.Matches.Add(match);
             await dbContext.SaveChangesAsync();
 

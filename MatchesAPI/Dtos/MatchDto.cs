@@ -3,6 +3,9 @@ namespace MatchesAPI.Dtos;
 public record class MatchDto(
     int Id,
     string HomeTeam,
+    int HomeScore,
     string AwayTeam,
-    DateTime MatchDate
+    int AwayScore,
+    DateTime MatchDate,
+    string Round
 );
