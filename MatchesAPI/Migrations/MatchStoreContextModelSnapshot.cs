@@ -3,40 +3,57 @@ using System;
 using MatchesAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MatchesAPI.Data.Migrations
+namespace MatchesAPI.Migrations
 {
     [DbContext(typeof(MatchStoreContext))]
-    [Migration("20251221202355_InitialCreate")]
-    partial class InitialCreate
+    partial class MatchStoreContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MatchesAPI.Entities.Match", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.Property<int>("Attendance")
-                        .HasColumnType("INTEGER");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AwayScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("away_score");
 
                     b.Property<int>("AwayTeamId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("away_team_id");
+
+                    b.Property<int>("HomeScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("home_score");
 
                     b.Property<int>("HomeTeamId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("home_team_id");
 
                     b.Property<DateTime>("MatchDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("match_date");
+
+                    b.Property<string>("Round")
+                        .HasColumnType("text")
+                        .HasColumnName("round");
 
                     b.HasKey("Id");
 
@@ -44,22 +61,26 @@ namespace MatchesAPI.Data.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.ToTable("Matches");
+                    b.ToTable("match");
                 });
 
             modelBuilder.Entity("MatchesAPI.Entities.Team", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams");
+                    b.ToTable("team");
                 });
 
             modelBuilder.Entity("MatchesAPI.Entities.Match", b =>

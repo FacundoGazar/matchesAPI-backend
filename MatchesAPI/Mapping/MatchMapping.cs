@@ -11,8 +11,7 @@ public static class MatchMapping
             {
                 HomeTeamId = match.HomeTeamId,
                 AwayTeamId = match.AwayTeamId,
-                MatchDate = match.MatchDate,
-                Attendance = match.Attendance
+                MatchDate = match.MatchDate
             };
     }
     
@@ -22,8 +21,7 @@ public static class MatchMapping
                 match.Id,
                 match.HomeTeam!.Name,
                 match.AwayTeam!.Name,
-                match.MatchDate,
-                match.Attendance
+                match.MatchDate
             );
     }
 }

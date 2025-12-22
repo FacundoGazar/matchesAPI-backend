@@ -5,38 +5,58 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MatchesAPI.Data.Migrations
+namespace MatchesAPI.Migrations
 {
     [DbContext(typeof(MatchStoreContext))]
-    [Migration("20251221204636_SeedTeams")]
-    partial class SeedTeams
+    [Migration("20251222190922_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MatchesAPI.Entities.Match", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.Property<int>("Attendance")
-                        .HasColumnType("INTEGER");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AwayScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("away_score");
 
                     b.Property<int>("AwayTeamId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("away_team_id");
+
+                    b.Property<int>("HomeScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("home_score");
 
                     b.Property<int>("HomeTeamId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("home_team_id");
 
                     b.Property<DateTime>("MatchDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("match_date");
+
+                    b.Property<string>("Round")
+                        .HasColumnType("text")
+                        .HasColumnName("round");
 
                     b.HasKey("Id");
 
@@ -44,59 +64,26 @@ namespace MatchesAPI.Data.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.ToTable("Matches");
+                    b.ToTable("match");
                 });
 
             modelBuilder.Entity("MatchesAPI.Entities.Team", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Boca Juniors"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "River Plate"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Estudiantes"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Gimnasia"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Racing"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Independiente"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "San Lorenzo"
-                        });
+                    b.ToTable("team");
                 });
 
             modelBuilder.Entity("MatchesAPI.Entities.Match", b =>
