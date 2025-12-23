@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # Db
 MatchAPI.db
+Migrations/
+
+.http

@@ -13,6 +13,8 @@ builder.Services.AddDbContext<MatchStoreContext>(options =>
 var app = builder.Build();
 
 app.MapMatchesEndpoints();
+app.MapStandingsEndpoints();
+app.MapTeamsEndpoints();
 
 await app.MigrateDbAsync();
 

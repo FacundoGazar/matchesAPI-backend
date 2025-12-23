@@ -6,6 +6,5 @@ public record class MatchDto(
     int HomeScore,
     string AwayTeam,
     int AwayScore,
-    DateTime MatchDate,
-    string Round
+    DateTime MatchDate
 );

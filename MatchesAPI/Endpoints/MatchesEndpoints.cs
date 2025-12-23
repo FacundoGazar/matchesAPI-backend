@@ -85,6 +85,66 @@ public static class MatchesEndpoints
             return Results.NoContent();
         });
 
+        group.MapGet("/{startDate}:{endDate}", async (DateTime startDate, DateTime endDate, MatchStoreContext dbContext) =>
+        {
+            var matches = await dbContext.Matches
+                                .Include(m => m.HomeTeam)
+                                .Include(m => m.AwayTeam)
+                                .Where(m => m.MatchDate >= startDate && m.MatchDate <= endDate)
+                                .Select(m => m.ToDto())
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return Results.Ok(matches);
+        });
+
+        group.MapGet("/mostwins", async (MatchStoreContext dbContext) =>
+        {
+            var winCounts = await dbContext.Matches
+                .Where(m => m.HomeScore != m.AwayScore)
+                .Select(m => new
+                {
+                    WinnerTeamId = m.HomeScore > m.AwayScore ? m.HomeTeamId : m.AwayTeamId
+                })
+                .GroupBy(m => m.WinnerTeamId)
+                .Select(g => new
+                {
+                    TeamId = g.Key,
+                    Wins = g.Count()
+                })
+                .OrderByDescending(g => g.Wins)
+                .ToListAsync();
+
+            return Results.Ok(winCounts);
+        });
+
+        group.MapGet("/standing", async (MatchStoreContext dbContext) =>
+        {
+            var standings = await dbContext.Standings
+                                .Include(s => s.Team)
+                                .OrderBy(s => s.Rank)
+                                .Select(s => s.ToDto())
+                                .AsNoTracking()
+                                .ToListAsync();
+
+            return Results.Ok(standings);
+        });
+
+        group.MapGet("/standing/{teamId}", async(int teamId, MatchStoreContext dbContext) =>
+        {
+            var standing = await dbContext.Standings
+                                .Include(s => s.Team)
+                                .Where(s => s.TeamId == teamId)
+                                .Select(s => s.ToDto())
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
+
+            return standing is null
+                ? Results.NotFound()
+                : Results.Ok(standing);
+        });
+
         return group;
     }
+    
 }

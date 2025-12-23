@@ -12,7 +12,6 @@ public static class MatchMapping
                 HomeTeamId = match.HomeTeamId,
                 AwayTeamId = match.AwayTeamId,
                 MatchDate = match.MatchDate,
-                Round = match.Round,
                 HomeScore = match.HomeScore,
                 AwayScore = match.AwayScore
             };
@@ -26,8 +25,7 @@ public static class MatchMapping
                 match.HomeScore,
                 match.AwayTeam!.Name,
                 match.AwayScore,
-                match.MatchDate,
-                match.Round
+                match.MatchDate
             );
     }
 }
