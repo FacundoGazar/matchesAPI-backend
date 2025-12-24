@@ -10,11 +10,25 @@ var connString = builder.Configuration.GetConnectionString("MatchAPI");
 builder.Services.AddDbContext<MatchStoreContext>(options =>
     options.UseNpgsql(connString));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
 
 app.MapMatchesEndpoints();
 app.MapStandingsEndpoints();
 app.MapTeamsEndpoints();
+
+app.UseCors("FrontendPolicy");
 
 await app.MigrateDbAsync();
 
