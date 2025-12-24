@@ -15,13 +15,33 @@ public static class MatchesEndpoints
         var group = app.MapGroup("/matches")
                         .WithParameterValidation();
 
-        group.MapGet("/", async (MatchStoreContext dbContext) => 
-            await dbContext.Matches
-                    .Include(m => m.HomeTeam)
-                    .Include(m => m.AwayTeam)
-                    .Select(m => m.ToDto())
-                    .AsNoTracking()
-                    .ToListAsync());
+        group.MapGet("/", async (
+        DateTime? from,
+        DateTime? to,
+        MatchStoreContext dbContext) =>
+        {
+            var query = dbContext.Matches
+                .Include(m => m.HomeTeam)
+                .Include(m => m.AwayTeam)
+                .AsQueryable();
+
+            if (from.HasValue)
+            {
+                var fromUtc = DateTime.SpecifyKind(from.Value, DateTimeKind.Utc);
+                query = query.Where(m => m.MatchDate >= fromUtc);
+            }
+
+            if (to.HasValue)
+            {
+                var toUtc = DateTime.SpecifyKind(to.Value, DateTimeKind.Utc);
+                query = query.Where(m => m.MatchDate <= toUtc);
+            }
+
+            return await query
+                .AsNoTracking()
+                .Select(m => m.ToDto())
+                .ToListAsync();
+        });
 
         group.MapGet("/{id}", async (int id, MatchStoreContext dbContext) => 
         {
@@ -85,19 +105,6 @@ public static class MatchesEndpoints
             return Results.NoContent();
         });
 
-        group.MapGet("/{startDate}:{endDate}", async (DateTime startDate, DateTime endDate, MatchStoreContext dbContext) =>
-        {
-            var matches = await dbContext.Matches
-                                .Include(m => m.HomeTeam)
-                                .Include(m => m.AwayTeam)
-                                .Where(m => m.MatchDate >= startDate && m.MatchDate <= endDate)
-                                .Select(m => m.ToDto())
-                                .AsNoTracking()
-                                .ToListAsync();
-
-            return Results.Ok(matches);
-        });
-
         group.MapGet("/mostwins", async (MatchStoreContext dbContext) =>
         {
             var winCounts = await dbContext.Matches
@@ -116,32 +123,6 @@ public static class MatchesEndpoints
                 .ToListAsync();
 
             return Results.Ok(winCounts);
-        });
-
-        group.MapGet("/standing", async (MatchStoreContext dbContext) =>
-        {
-            var standings = await dbContext.Standings
-                                .Include(s => s.Team)
-                                .OrderBy(s => s.Rank)
-                                .Select(s => s.ToDto())
-                                .AsNoTracking()
-                                .ToListAsync();
-
-            return Results.Ok(standings);
-        });
-
-        group.MapGet("/standing/{teamId}", async(int teamId, MatchStoreContext dbContext) =>
-        {
-            var standing = await dbContext.Standings
-                                .Include(s => s.Team)
-                                .Where(s => s.TeamId == teamId)
-                                .Select(s => s.ToDto())
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync();
-
-            return standing is null
-                ? Results.NotFound()
-                : Results.Ok(standing);
         });
 
         return group;

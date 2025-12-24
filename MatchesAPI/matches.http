@@ -1,4 +1,4 @@
-GET http://localhost:5165/matches
+GET http://localhost:5165/matches?from=2024-09-17
 
 ###
 GET http://localhost:5165/matches/511
@@ -31,9 +31,6 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5165/matches/1
-
-###
-GET http://localhost:5165/matches/2025-01-23:2025-01-24
 
 ###
 GET http://localhost:5165/matches/mostwins
