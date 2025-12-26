@@ -21,8 +21,10 @@ public static class MatchMapping
     {
         return new (
                 match.Id,
+                match.HomeTeamId,
                 match.HomeTeam!.Name,
                 match.HomeScore,
+                match.AwayTeamId,
                 match.AwayTeam!.Name,
                 match.AwayScore,
                 match.MatchDate

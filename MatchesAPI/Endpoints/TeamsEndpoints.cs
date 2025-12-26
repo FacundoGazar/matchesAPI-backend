@@ -25,6 +25,18 @@ public static class TeamsEndpoints
             return Results.Ok(teams);
         });
 
+        group.MapGet("/{id}", async (int id, MatchStoreContext dbContext) =>
+        {
+            var team = await dbContext.Teams
+                                .Include(t => t.Standing)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(t => t.Id == id);
+
+            return team is null 
+                ? Results.NotFound() 
+                : Results.Ok(team.ToDto());
+        });
+
         return group;
     }
     
