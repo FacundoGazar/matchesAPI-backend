@@ -1,7 +1,0 @@
-GET http://localhost:5165/standings/
-
-###
-GET http://localhost:5165/standings/id/12
-
-###
-GET http://localhost:5165/standings/rank/12

@@ -16,13 +16,16 @@ public static class MatchesEndpoints
                         .WithParameterValidation();
 
         group.MapGet("/", async (
-        DateTime? from,
-        DateTime? to,
-        MatchStoreContext dbContext) =>
+            MatchStoreContext dbContext,
+            DateTime? from,
+            DateTime? to,
+            int page = 1,
+            int pageSize = 1) =>
         {
             var query = dbContext.Matches
                 .Include(m => m.HomeTeam)
                 .Include(m => m.AwayTeam)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (from.HasValue)
@@ -37,10 +40,23 @@ public static class MatchesEndpoints
                 query = query.Where(m => m.MatchDate <= toUtc);
             }
 
-            return await query
-                .AsNoTracking()
+            var totalCount = await query.CountAsync();
+
+            var matches = await query
+                .OrderBy(m => m.Week)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(m => m.ToDto())
                 .ToListAsync();
+
+            return Results.Ok(new
+            {
+                data = matches,
+                page,
+                pageSize,
+                totalCount,
+                totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            });
         });
 
         group.MapGet("/{id}", async (int id, MatchStoreContext dbContext) => 
@@ -55,56 +71,7 @@ public static class MatchesEndpoints
                 : Results.Ok(match.ToDto());
         })
         .WithName(GetMatchEndpointName);
-
-        group.MapPost("/", async (CreateMatchDto newMatch, MatchStoreContext dbContext) =>
-        {
-            Match match = newMatch.ToEntity();
-            match.HomeTeam = dbContext.Teams.Find(newMatch.HomeTeamId);
-            match.AwayTeam = dbContext.Teams.Find(newMatch.AwayTeamId);
-
-            if (match.HomeTeam is null || match.AwayTeam is null
-                || match.HomeTeamId == match.AwayTeamId)
-            {
-                return Results.BadRequest("Invalid team IDs provided.");
-            }
-
-            dbContext.Matches.Add(match);
-            await dbContext.SaveChangesAsync();
-
-            return Results.CreatedAtRoute(
-                GetMatchEndpointName,
-                new { id = match.Id }, 
-                match.ToDto());
-        })
-        .WithParameterValidation();
-
-        group.MapPut("/{id}", async (int id, UpdateMatchDto updatedMatch, MatchStoreContext dbContext) =>
-        {
-            Match? match = await dbContext.Matches.FindAsync(id);
-
-            if (match is null)
-            {
-                return Results.NotFound();
-            }
         
-            dbContext.Entry(match)
-                        .CurrentValues
-                        .SetValues(updatedMatch);
-
-            await dbContext.SaveChangesAsync();
-
-            return Results.NoContent();
-        })
-        .WithParameterValidation();
-
-        group.MapDelete("/{id}", async (int id, MatchStoreContext dbContext) =>
-        {
-            await dbContext.Matches.Where(m => m.Id == id)
-                            .ExecuteDeleteAsync();
-            
-            return Results.NoContent();
-        });
-
         group.MapGet("/mostwins", async (MatchStoreContext dbContext) =>
         {
             var winCounts = await dbContext.Matches

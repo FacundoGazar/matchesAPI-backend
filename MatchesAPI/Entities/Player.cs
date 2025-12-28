@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MatchesAPI.Entities;
 
+[Table("player")]
 public class Player
 {
     [Key]
@@ -13,10 +14,9 @@ public class Player
     [Column("name")]
     public string Name { get; set; } = null!;
 
-    [Column("nation")]
-    public string Nation { get; set; } = null!;
-
     [Column("age")]
     public int Age { get; set; }
 
+    [Column("nation")]
+    public string Nation { get; set; } = null!;
 }

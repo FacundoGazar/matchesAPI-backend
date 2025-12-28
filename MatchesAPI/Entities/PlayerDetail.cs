@@ -43,9 +43,6 @@ public class PlayerDetail
     [Column("red")]
     public int Red { get; set; }
 
-    [Column("age")]
-    public int Age { get; set; }
-    
     [Column("weekly")]
     public decimal Weekly { get; set; }
 

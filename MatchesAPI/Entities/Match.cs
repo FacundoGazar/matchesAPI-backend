@@ -38,7 +38,7 @@ public class Match
     public int AwayScore { get; set; }
 
     [Column("attendance")]
-    public long? Attendance { get; set; }
+    public long Attendance { get; set; }
 
     [Column("venue")]
     public string Venue { get; set; } = null!;

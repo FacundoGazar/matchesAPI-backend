@@ -5,18 +5,6 @@ namespace MatchesAPI.Mapping;
 
 public static class MatchMapping
 {
-    public static Match ToEntity(this CreateMatchDto match)
-    {
-        return new Match()
-            {
-                HomeTeamId = match.HomeTeamId,
-                AwayTeamId = match.AwayTeamId,
-                MatchDate = match.MatchDate,
-                HomeScore = match.HomeScore,
-                AwayScore = match.AwayScore
-            };
-    }
-    
     public static MatchDto ToDto(this Match match)
     {
         return new (
@@ -27,7 +15,13 @@ public static class MatchMapping
                 match.AwayTeamId,
                 match.AwayTeam!.Name,
                 match.AwayScore,
-                match.MatchDate
+                match.MatchDate,
+                match.Week,
+                match.Day,
+                match.MatchTime,
+                match.Attendance,
+                match.Venue,
+                match.Referee
             );
     }
 }

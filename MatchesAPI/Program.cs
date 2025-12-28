@@ -27,6 +27,7 @@ var app = builder.Build();
 app.MapMatchesEndpoints();
 app.MapStandingsEndpoints();
 app.MapTeamsEndpoints();
+app.MapPlayerDetailEndpoints();
 
 app.UseCors("FrontendPolicy");
 

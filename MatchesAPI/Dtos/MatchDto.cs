@@ -8,5 +8,11 @@ public record class MatchDto(
     int AwayTeamId,
     string AwayTeam,
     int AwayScore,
-    DateTime MatchDate
+    DateTime MatchDate,
+    int Week,
+    string Day,
+    TimeOnly MatchTime,
+    long Attendance,
+    string Venue,
+    string Referee
 );
